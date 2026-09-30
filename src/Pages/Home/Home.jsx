@@ -1,20 +1,29 @@
-import React, { useState, useRef, useEffect } from 'react';
+import { Fragment, useState, useRef, useEffect } from 'react';
 import {
-  Sun,
-  Moon,
   Rocket,
   Briefcase,
-  CloudDownload,
+  CloudUpload,
+  Database,
   ArrowRight,
-  Brain,
-  CircleDollarSign,
-  Diamond,
-  Compass,
-  LayoutGrid,
-  Plus,
-  TrendingUp,
+  ChevronLeft,
+  ChevronRight,
+  ShieldCheck,
+  Users,
+  Heart,
+  ChartColumn,
+  Target,
+  Lightbulb,
+  Settings,
+  FolderCheck,
+  Star,
+  Quote,
+  Send,
 } from 'lucide-react';
 import './Home.css';
+import Navbar from '../../components/Navbar';
+import { Words, CountUp } from '../../components/Reveal';
+import { useScrollReveal, useParallax } from '../../components/useReveal';
+import { socialLinks } from '../../data/socialLinks';
 
 import brand1 from '../../assets/Brand Logos/Brand1.png';
 import brand2 from '../../assets/Brand Logos/Brand2.png';
@@ -41,94 +50,126 @@ const brandLogos = [
 const servicesData = [
   {
     id: 'digital-transformation',
-    iconType: 'rocket',
-    badgeVariant: 'sky',
+    Icon: Rocket,
+    variant: 'sky',
     title: 'Digital Transformation',
-    description: 'Modernize your business with cutting-edge digital solutions.',
-    linkText: 'Learn More',
+    description: 'Modernize your business with cutting-edge digital solutions that create lasting value.',
     href: '#digital-transformation',
   },
   {
     id: 'it-consulting',
-    iconType: 'briefcase',
-    badgeVariant: 'green',
+    Icon: Briefcase,
+    variant: 'green',
     title: 'IT Consulting',
-    description: 'Expert guidance to optimize systems and drive efficiency.',
-    linkText: 'Learn More',
+    description: 'Expert guidance to optimize systems and drive operational efficiency.',
     href: '#it-consulting',
   },
   {
     id: 'cloud-solutions',
-    iconType: 'cloud',
-    badgeVariant: 'purple',
+    Icon: CloudUpload,
+    variant: 'purple',
     title: 'Cloud Solutions',
     description: 'Scalable and secure cloud solutions for the modern enterprise.',
-    linkText: 'Learn More',
     href: '#cloud-solutions',
   },
   {
     id: 'data-analytics',
-    iconType: 'analytics',
-    badgeVariant: 'orange',
+    Icon: Database,
+    variant: 'orange',
     title: 'Data & Analytics',
     description: 'Turn data into actionable insights and accelerate growth.',
-    linkText: 'Learn More',
     href: '#data-analytics',
   },
 ];
 
-const arcServicesList = [
+const aboutFeatures = [
   {
-    id: 'business-planning',
-    title: 'Business Planning',
-    shortDesc: 'Our flagship business publication, Prysm Quarterly, has been defining and informing the senior management agenda since 1964.',
-    highlightText: 'Prysm Quarterly',
-    iconType: 'chart',
+    Icon: ShieldCheck,
+    title: 'Certified Company',
+    text: 'Recognized for quality, security, and excellence in delivery.',
   },
   {
-    id: 'financial-strategy',
-    title: 'Financial Strategy',
-    shortDesc: 'Custom algorithmic modeling and revenue optimization engines engineered to maximize enterprise capital efficiency and sustainable ROI.',
-    highlightText: 'Capital Architecture',
-    iconType: 'coins',
+    Icon: Users,
+    title: 'Expert Team',
+    text: 'A diverse team of industry experts and technologists.',
   },
   {
-    id: 'creative-intelligence',
-    title: 'Creative Intelligence',
-    shortDesc: 'Generative AI workflows and proprietary model architectures customized for rapid brand scaling and automated design operations.',
-    highlightText: 'Neural Intelligence',
-    iconType: 'brain',
-  },
-  {
-    id: 'value-engineering',
-    title: 'Value Engineering',
-    shortDesc: 'End-to-end modernization of legacy codebases, cloud infrastructure migration, and high-performance system optimization.',
-    highlightText: 'Enterprise Modernization',
-    iconType: 'diamond',
-  },
-  {
-    id: 'strategic-consulting',
-    title: 'Strategic Consulting',
-    shortDesc: 'Executive technology advisory and technical due diligence delivering resilient architectural blueprints for high-growth tech ventures.',
-    highlightText: 'Advisory Board',
-    iconType: 'compass',
-  },
-  {
-    id: 'digital-infrastructure',
-    title: 'Digital Infrastructure',
-    shortDesc: 'Ultra-low latency microservice fabrics and distributed cloud networks engineered for 99.999% high-availability enterprise scale.',
-    highlightText: 'Cloud Fabric',
-    iconType: 'grid',
+    Icon: Heart,
+    title: 'Client-Centric Approach',
+    text: 'Your success is our priority. We build long-term partnerships.',
   },
 ];
 
+const processSteps = [
+  { num: '01', Icon: Target, variant: 'green', anim: 'pulse', title: 'Discover', text: 'Understand your goals, challenges, and opportunities.' },
+  { num: '02', Icon: Lightbulb, variant: 'sky', anim: 'glow', title: 'Plan', text: 'Create a tailored strategy and roadmap.' },
+  { num: '03', Icon: Settings, variant: 'purple', anim: 'spin', title: 'Execute', text: 'Build and deploy scalable solutions.' },
+  { num: '04', Icon: ChartColumn, variant: 'orange', anim: 'bob', title: 'Grow', text: 'Measure results and optimize for continuous improvement.' },
+];
+
+const whyStats = [
+  { Icon: Users, variant: 'sky', to: 100, suffix: '+', label: 'Global Clients' },
+  { Icon: FolderCheck, variant: 'sky', to: 250, suffix: '+', label: 'Projects Delivered' },
+  { Icon: Star, variant: 'orange', to: 98, suffix: '%', label: 'Client Satisfaction' },
+];
+
+const testimonials = [
+  {
+    name: 'Priya Sharma',
+    role: 'CTO, FinEdge',
+    initials: 'PS',
+    text: 'Aurevia has been a trusted technology partner for us. Their team understands our business and consistently delivers high-quality solutions.',
+  },
+  {
+    name: 'Rohan Mehta',
+    role: 'Head of IT, NexaCorp',
+    initials: 'RM',
+    text: 'The team brings deep expertise and a collaborative approach. They helped us accelerate our digital transformation journey.',
+  },
+  {
+    name: 'Ananya Rao',
+    role: 'Director, SkyTech',
+    initials: 'AR',
+    text: 'Professional, innovative, and reliable. Their solutions have significantly improved our operational efficiency.',
+  },
+];
+
+const footerColumns = [
+  { title: 'Services', links: ['Digital Transformation', 'IT Consulting', 'Cloud Solutions', 'Data & Analytics', 'Managed Services'] },
+  { title: 'Company', links: ['About Us', 'Our Process', 'Careers', 'Blog', 'Contact'] },
+  { title: 'Resources', links: ['Case Studies', 'Whitepapers', 'Events', 'Support', 'FAQ'] },
+];
+
 const Home = () => {
-  const [activeTab, setActiveTab] = useState('Home');
   const [isDarkMode, setIsDarkMode] = useState(() => {
     const saved = localStorage.getItem('aurevia_theme');
     return saved === 'dark';
   });
-  const [activeServiceIndex, setActiveServiceIndex] = useState(0);
+  const [testimonialStart, setTestimonialStart] = useState(0);
+  const [email, setEmail] = useState('');
+
+  const rootRef = useRef(null);
+  useScrollReveal(rootRef);
+  useParallax(rootRef);
+
+  // Reveal the process timeline once it scrolls into view
+  const processRef = useRef(null);
+  const [processInView, setProcessInView] = useState(false);
+  useEffect(() => {
+    const el = processRef.current;
+    if (!el) return undefined;
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setProcessInView(true);
+          io.disconnect();
+        }
+      },
+      { threshold: 0.25 },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
 
   const toggleTheme = () => {
     setIsDarkMode((prev) => {
@@ -137,8 +178,6 @@ const Home = () => {
       return next;
     });
   };
-
-  const navLinks = ['Home', 'About', 'Projects', 'Services', 'Blog', 'Contact'];
 
   // Brand carousel
   const carouselTrackRef = useRef(null);
@@ -160,57 +199,8 @@ const Home = () => {
     return () => cancelAnimationFrame(animId);
   }, [carouselPaused]);
 
-  const renderServiceIcon = (type) => {
-    switch (type) {
-      case 'rocket':
-        return <Rocket size={24} strokeWidth={1.9} />;
-      case 'briefcase':
-        return <Briefcase size={24} strokeWidth={1.9} />;
-      case 'cloud':
-        return <CloudDownload size={24} strokeWidth={1.9} />;
-      case 'analytics':
-        return (
-          <svg
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.9"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <circle cx="12" cy="12" r="3.5" />
-            <path d="M12 2v3M12 19v3M2 12h3M19 12h3" />
-            <path d="M17.5 6.5l-2.2 2.2M8.7 15.3l-2.2 2.2M6.5 6.5l2.2 2.2M15.3 15.3l2.2 2.2" />
-          </svg>
-        );
-      default:
-        return <Rocket size={24} strokeWidth={1.9} />;
-    }
-  };
-
-  const renderArcNodeIcon = (type) => {
-    switch (type) {
-      case 'chart':
-        return <TrendingUp size={22} strokeWidth={2} />;
-      case 'coins':
-        return <CircleDollarSign size={22} strokeWidth={2} />;
-      case 'brain':
-        return <Brain size={22} strokeWidth={2} />;
-      case 'diamond':
-        return <Diamond size={22} strokeWidth={2} />;
-      case 'compass':
-        return <Compass size={22} strokeWidth={2} />;
-      case 'grid':
-        return <LayoutGrid size={22} strokeWidth={2} />;
-      default:
-        return <TrendingUp size={22} strokeWidth={2} />;
-    }
-  };
-
   return (
-    <div className={`home-container ${isDarkMode ? 'dark' : 'light'}`}>
+    <div ref={rootRef} className={`home-container ${isDarkMode ? 'dark' : 'light'}`}>
       {/* ── Above-the-fold viewport: fills exactly 100vh ── */}
       <div className="hero-viewport">
         {/* Full Hero Animated Video Background (Dual Video for Seamless Crossfade) */}
@@ -241,63 +231,7 @@ const Home = () => {
           <div className={`hero-video-gradient-overlay ${isDarkMode ? 'dark' : 'light'}`}></div>
         </div>
 
-        {/* Header / Navbar */}
-        <header className="hero-header">
-          <div className="header-inner">
-            {/* Logo */}
-            <a href="#home" className="brand-logo" aria-label="Aurevia">
-              <img
-                src="/images/aurevia-logo.png"
-                alt="Aurevia"
-                className="brand-logo-img"
-              />
-            </a>
-
-            {/* Navigation Menu with Liquid Glassmorphism */}
-            <nav className="nav-menu" aria-label="Main Navigation">
-              {navLinks.map((tab) => {
-                const isActive = activeTab === tab;
-                return (
-                  <a
-                    key={tab}
-                    href={`#${tab.toLowerCase()}`}
-                    className={`nav-link ${isActive ? 'active' : ''}`}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      setActiveTab(tab);
-                    }}
-                  >
-                    <span className="nav-link-text">{tab}</span>
-                  </a>
-                );
-              })}
-            </nav>
-
-            {/* Header Action: Theme Toggler & Get in Touch */}
-            <div className="header-cta">
-              {/* Liquid Glass Theme Switcher */}
-              <button
-                className="theme-toggle-btn"
-                type="button"
-                onClick={toggleTheme}
-                aria-label={`Switch to ${isDarkMode ? 'Light' : 'Dark'} mode`}
-                title={`Switch to ${isDarkMode ? 'Light' : 'Dark'} mode`}
-              >
-                <div className="theme-toggle-track">
-                  <span className="theme-toggle-thumb"></span>
-                  <div className="theme-toggle-icons">
-                    <Sun size={14} className="theme-icon-sun" />
-                    <Moon size={14} className="theme-icon-moon" />
-                  </div>
-                </div>
-              </button>
-
-              <button className="btn-get-in-touch" type="button">
-                Get in Touch
-              </button>
-            </div>
-          </div>
-        </header>
+        <Navbar page="home" isDarkMode={isDarkMode} onToggleTheme={toggleTheme} />
 
         {/* Hero Section */}
         <main className="hero-section">
@@ -376,327 +310,348 @@ const Home = () => {
         </section>
       </div>{/* end .hero-viewport */}
 
-      {/* ── What We Do / Solutions Section (Just below Hero Section) ── */}
+      {/* ── What We Do / Solutions ── */}
       <section className="services-section" id="services" aria-labelledby="services-heading">
-        <div className="services-container">
-          {/* Section Header Row */}
+        <div className="section-container">
           <div className="services-header-row">
             <div className="services-header-left">
-              <span className="services-eyebrow">WHAT WE DO</span>
-              <h2 id="services-heading" className="services-main-title">
-                <span className="services-title-line">Solutions that</span>
-                <span className="services-title-line">
-                  Drive <span className="services-title-accent">Real Impact</span>
-                </span>
+              <span className="section-eyebrow" data-reveal="up">WHAT WE DO</span>
+              <h2 id="services-heading" className="section-title" data-reveal="words">
+                <Words text="Solutions that" /><br />
+                <Words text="Drive" start={2} /><span className="text-accent"><Words text="Real Impact" start={3} /></span>
               </h2>
+              <p className="section-lead" data-reveal="up" style={{ '--d': '250ms' }}>
+                We combine industry expertise, modern technology, and a
+                people-first approach to help organizations innovate, scale,
+                and stay ahead.
+              </p>
             </div>
 
-            <div className="services-header-right">
+            <div className="services-header-right" data-reveal="left" style={{ '--d': '300ms' }}>
               <p className="services-header-desc">
-                From strategy to execution, we provide end-to-end<br className="desc-br" />
-                services tailored to your business goals.
+                From strategy to execution, we provide end-to-end services tailored to your business goals.
               </p>
-              <a href="#services" className="services-explore-all-link">
+              <a href="#services" className="link-arrow">
                 <span>Explore All Services</span>
-                <ArrowRight size={16} className="explore-arrow-icon" />
+                <ArrowRight size={15} />
               </a>
             </div>
           </div>
 
-          {/* 4 Feature Cards Grid */}
           <div className="services-cards-grid">
-            {servicesData.map((service) => (
-              <div
-                key={service.id}
-                className={`service-card-item card-${service.badgeVariant}`}
-              >
-                <div className={`service-icon-box icon-${service.badgeVariant}`}>
-                  {renderServiceIcon(service.iconType)}
+            {servicesData.map(({ id, Icon, variant, title, description, href }, i) => (
+              <article key={id} className="service-card" data-reveal="up" style={{ '--d': `${i * 110}ms` }}>
+                <div className={`icon-badge tone-${variant}`}>
+                  <Icon size={22} strokeWidth={1.8} />
                 </div>
-
-                <h3 className="service-card-title">{service.title}</h3>
-                <p className="service-card-desc">{service.description}</p>
-
-                <a href={service.href} className="service-card-link">
-                  <span>{service.linkText}</span>
-                  <ArrowRight size={15} className="card-link-arrow" />
+                <h3 className="service-card-title">{title}</h3>
+                <p className="service-card-desc">{description}</p>
+                <a href={href} className="link-arrow link-arrow-sm">
+                  <span>Learn More</span>
+                  <ArrowRight size={14} />
                 </a>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── About Us ── */}
+      <section className="about-section" id="about" aria-labelledby="about-heading">
+        <div className="about-glow" aria-hidden="true"></div>
+        <div className="section-container about-grid">
+          <div className="about-visual">
+            <div className="about-photo about-photo-main" data-reveal="clip-left">
+              <img src="/images/about-team-2.jpg" alt="Aurevia team in a strategy meeting" loading="lazy" />
+            </div>
+            <div className="about-dots" aria-hidden="true" data-reveal="fade" style={{ '--d': '500ms' }}></div>
+            <div className="about-photo about-photo-secondary" data-reveal="clip-right" style={{ '--d': '250ms' }}>
+              <img src="/images/about-team-1.jpg" alt="Engineers reviewing code together" loading="lazy" />
+            </div>
+            <div className="about-experience-card" data-reveal="zoom" style={{ '--d': '600ms' }}>
+              <span className="icon-badge tone-sky icon-badge-sm">
+                <ChartColumn size={20} strokeWidth={1.8} />
+              </span>
+              <div>
+                <strong><CountUp to={10} suffix="+" /></strong>
+                <span>Years of Experience</span>
+              </div>
+              <span className="experience-arrow" aria-hidden="true">
+                <ArrowRight size={15} />
+              </span>
+            </div>
+          </div>
+
+          <div className="about-content">
+            <span className="section-eyebrow" data-reveal="up">ABOUT US</span>
+            <h2 id="about-heading" className="section-title" data-reveal="words">
+              <Words text="We Help IT Companies" /><br />
+              <Words text="Scale" start={4} /><span className="text-accent"><Words text="Engineering Capacity" start={5} /></span>
+            </h2>
+            <p className="section-lead about-lead" data-reveal="up" style={{ '--d': '250ms' }}>
+              We partner with organizations to build, optimize, and scale their
+              technology teams. With a strong focus on innovation and execution,
+              we deliver solutions that help businesses move faster and achieve
+              measurable results.
+            </p>
+
+            <ul className="about-feature-list">
+              {aboutFeatures.map(({ Icon, title, text }, i) => (
+                <li key={title} className="about-feature" data-reveal="right" style={{ '--d': `${i * 130}ms` }}>
+                  <Icon size={24} strokeWidth={2} className="about-feature-icon" />
+                  <div>
+                    <h3>{title}</h3>
+                    <p>{text}</p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Our Process ── */}
+      <section className="process-section" id="process" aria-labelledby="process-heading">
+        <div className="section-container">
+          <div className="process-header">
+            <div>
+              <span className="section-eyebrow" data-reveal="up">OUR PROCESS</span>
+              <h2 id="process-heading" className="section-title" data-reveal="words">
+                <Words text="A Smarter Approach" /><br />
+                <Words text="to" start={3} /><span className="text-accent"><Words text="Real Results" start={4} /></span>
+              </h2>
+              <p className="section-lead" data-reveal="up" style={{ '--d': '250ms' }}>
+                We follow a proven, collaborative process to turn
+                ideas into measurable business outcomes.
+              </p>
+            </div>
+            <a href="#process" className="btn-outline-pill" data-reveal="left" style={{ '--d': '300ms' }}>
+              <span>Our Process</span>
+              <ArrowRight size={13} />
+            </a>
+          </div>
+
+          <ol ref={processRef} className={`process-steps ${processInView ? 'in-view' : ''}`}>
+            {processSteps.map(({ num, Icon, variant, anim, title, text }, i) => (
+              <Fragment key={num}>
+                <li className={`process-card tone-${variant}`} style={{ '--i': i }}>
+                  <span className={`process-icon anim-${anim}`} aria-hidden="true">
+                    <Icon size={28} strokeWidth={1.8} />
+                  </span>
+                  <span className="process-num">{num}</span>
+                  <h3>{title}</h3>
+                  <p>{text}</p>
+                  <span className="process-bar" aria-hidden="true"></span>
+                </li>
+                {i < processSteps.length - 1 && (
+                  <li
+                    className={`process-connector tone-${variant} next-${processSteps[i + 1].variant}`}
+                    style={{ '--i': i }}
+                    aria-hidden="true"
+                  >
+                    <svg viewBox="0 0 100 190" preserveAspectRatio="none">
+                      <path className="path-a" d="M0 52 C 24 58, 26 88, 50 104" />
+                      <path className="path-b" d="M100 52 C 76 58, 74 88, 50 104" />
+                    </svg>
+                    <span className="process-arrow">
+                      <ArrowRight size={18} strokeWidth={2.2} />
+                    </span>
+                  </li>
+                )}
+              </Fragment>
+            ))}
+          </ol>
+        </div>
+      </section>
+
+      {/* ── Why Choose Us ── */}
+      <section className="why-section" aria-labelledby="why-heading">
+        <div className="why-banner" aria-hidden="true">
+          <div className="why-bg">
+            <img src="/images/why-choose-us-bg.jpg" alt="" loading="lazy" data-parallax />
+          </div>
+        </div>
+        <div className="section-container why-inner">
+          <div className="why-panel" data-reveal="left">
+            <span className="section-eyebrow" data-reveal="up" style={{ '--d': '150ms' }}>WHY CHOOSE US</span>
+            <h2 id="why-heading" className="section-title" data-reveal="words">
+              <Words text="Built for Today." start={1} /><br />
+              <Words text="Ready for" start={4} /><span className="text-accent"><Words text="Tomorrow." start={6} /></span>
+            </h2>
+            <p className="section-lead" data-reveal="up" style={{ '--d': '450ms' }}>
+              We combine deep technical expertise with a strong understanding
+              of business needs to deliver solutions that create real, measurable impact.
+            </p>
+            <a href="#contact" className="btn-primary" data-reveal="up" style={{ '--d': '600ms' }}>
+              <span>Talk to Our Experts</span>
+              <ArrowRight size={14} />
+            </a>
+          </div>
+
+          <div className="why-stats">
+            {whyStats.map(({ Icon, variant, to, suffix, label }, i) => (
+              <div key={label} className="why-stat-card" data-reveal="right" style={{ '--d': `${i * 120}ms` }}>
+                <span className={`icon-badge icon-badge-sm tone-${variant}`}>
+                  <Icon size={20} strokeWidth={1.7} />
+                </span>
+                <div>
+                  <strong><CountUp to={to} suffix={suffix} /></strong>
+                  <span>{label}</span>
+                </div>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ── Engineering Capacity / About Section (Just below What We Do) ── */}
-      <section className="about-scale-section" id="about" aria-labelledby="about-scale-heading">
-        {/* Background Decorative Fluid Waves & Halftone Dots */}
-        <div className="about-bg-decoration" aria-hidden="true">
-          <svg className="about-wave-svg" viewBox="0 0 540 500" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <linearGradient id="waveGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#0062ff" stopOpacity="0.8" />
-                <stop offset="100%" stopColor="#38bdf8" stopOpacity="0.15" />
-              </linearGradient>
-              <pattern id="dotPattern" x="0" y="0" width="14" height="14" patternUnits="userSpaceOnUse">
-                <circle cx="2" cy="2" r="1.5" fill="#0062ff" fillOpacity="0.25" />
-              </pattern>
-            </defs>
-            {/* Halftone Dot Grid */}
-            <circle cx="100" cy="250" r="110" fill="url(#dotPattern)" />
-            {/* Fluid Cyan/Blue Curves */}
-            <path d="M-60,210 C70,160 170,320 320,230 C420,170 480,250 540,290" stroke="url(#waveGrad1)" strokeWidth="2.5" fill="none" />
-            <path d="M-60,230 C80,180 180,340 330,250 C430,190 490,270 550,310" stroke="url(#waveGrad1)" strokeWidth="2" fill="none" />
-            <path d="M-60,250 C90,200 190,360 340,270 C440,210 500,290 560,330" stroke="url(#waveGrad1)" strokeWidth="1.5" strokeDasharray="5 5" fill="none" />
-            <path d="M-60,270 C100,220 200,380 350,290 C450,230 510,310 570,350" stroke="url(#waveGrad1)" strokeWidth="1" fill="none" />
-            <path d="M-60,180 C60,130 160,290 310,200 C410,140 470,220 530,260" stroke="url(#waveGrad1)" strokeWidth="1.5" fill="none" />
-          </svg>
-        </div>
-
-        <div className="about-scale-container">
-          {/* Left Column: Overlapping Images Collage */}
-          <div className="about-visual-column">
-            <div className="about-images-wrapper">
-              {/* Primary Top Image */}
-              <div className="about-image-card primary-image-card">
-                <img
-                  src="/images/about-team-1.jpg"
-                  alt="Software Engineering Team Collaborating"
-                  className="about-img-fluid"
-                  loading="lazy"
-                />
-              </div>
-
-              {/* Secondary Overlapping Bottom Image */}
-              <div className="about-image-card secondary-image-card">
-                <img
-                  src="/images/about-team-2.jpg"
-                  alt="Engineering Meeting and Discussion"
-                  className="about-img-fluid"
-                  loading="lazy"
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* Right Column: Heading, Paragraph, and Highlights */}
-          <div className="about-content-column">
-            <h2 id="about-scale-heading" className="about-main-headline">
-              We Help IT Companies Scale Engineering Capacity
+      {/* ── Testimonials ── */}
+      <section className="testimonials-section" id="testimonials" aria-labelledby="testimonials-heading">
+        <div className="section-container">
+          <div className="testimonials-header">
+            <span className="section-eyebrow section-eyebrow-hidden">TESTIMONIALS</span>
+            <h2 id="testimonials-heading" className="section-title section-title-md" data-reveal="words">
+              <Words text="Trusted by" /><span className="text-accent"><Words text="forward-thinking" start={2} /></span><Words text="organizations" start={3} />
             </h2>
-
-            <p className="about-main-description">
-              Dissuade ecstatic and properly saw entirely sir why laughter endeavor.
-              In on my jointure horrible margaret suitable he followed speedily.
-              Indeed vanity excuse or mr lovers of on. By offer scale an stuff.
-              Blush be sorry no sight sang lose.
-            </p>
-
-            {/* Feature Rows */}
-            <div className="about-feature-list">
-              {/* Feature Item 1: Certified Company */}
-              <div className="about-feature-item">
-                <div className="about-feature-icon-wrapper">
-                  <svg
-                    className="about-feature-icon"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.8"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <rect x="2" y="3" width="20" height="14" rx="2" />
-                    <line x1="6" y1="7" x2="14" y2="7" />
-                    <line x1="6" y1="11" x2="10" y2="11" />
-                    <circle cx="16" cy="14" r="3" />
-                    <path d="M16 11v6M14 16l2 2 2-2" />
-                  </svg>
-                </div>
-                <div className="about-feature-text-block">
-                  <h3 className="about-feature-title">Certified Company</h3>
-                  <p className="about-feature-subtitle">
-                    Assurance yet bed was improving furniture man. Distrusts delighted she listening.
-                  </p>
-                </div>
-              </div>
-
-              {/* Feature Item 2: Award Ceremony */}
-              <div className="about-feature-item">
-                <div className="about-feature-icon-wrapper">
-                  <svg
-                    className="about-feature-icon"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.8"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d="M5 8c0 4.5 3 8 7 8s7-3.5 7-8" />
-                    <path d="M3 6c0 3 1.5 5.5 3.5 7" />
-                    <path d="M21 6c0 3-1.5 5.5-3.5 7" />
-                    <polygon points="12 3 13.5 6.5 17 7 14.5 9.5 15 13 12 11.2 9 13 9.5 9.5 7 7 10.5 6.5 12 3" />
-                  </svg>
-                </div>
-                <div className="about-feature-text-block">
-                  <h3 className="about-feature-title">Award Ceremony</h3>
-                  <p className="about-feature-subtitle">
-                    Assurance yet bed was improving furniture man. Distrusts delighted she listening mrs extensive.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── Interactive Arc Services Section (Just below Scale Engineering Capacity) ── */}
-      <section className="services-arc-section" id="best-services" aria-labelledby="arc-services-heading">
-        {/* Background Skyline Silhouettes & Halftone Accents */}
-        <div className="arc-bg-decorations" aria-hidden="true">
-          {/* Top Left Halftone Dots */}
-          <div className="arc-halftone-top-left"></div>
-
-          {/* Top Right Halftone Dots */}
-          <div className="arc-halftone-top-right"></div>
-
-          {/* Panoramic Dubai Skyline Watermark */}
-          <div className="arc-dubai-skyline-bg">
-            <img
-              src="/images/dubai-skyline-watermark.jpg"
-              alt="Dubai Skyline Landmark Theme"
-              className="arc-dubai-skyline-img"
-              loading="lazy"
-            />
-          </div>
-        </div>
-
-        <div className="arc-section-container">
-          {/* Top Center Header */}
-          <div className="arc-header-block">
-            <div className="arc-section-eyebrow">
-              <span className="eyebrow-dash"></span>
-              <span className="eyebrow-label">Our services</span>
-              <span className="eyebrow-dash"></span>
-            </div>
-
-            <h2 id="arc-services-heading" className="arc-section-headline">
-              Always we offer the best<br />services for success!
-            </h2>
-
-            <p className="arc-section-subdesc">
-              New analytic tools can help manufacturers in labor-intensive sectors boost
-              productivity and earnings by double-digit on It is a secure and simple
-              ondemand. the total percentages.
-            </p>
-          </div>
-
-          {/* Interactive Arc Wheel Display */}
-          <div className="arc-interactive-stage">
-            {/* SVG Curved Track Line */}
-            <svg className="arc-track-svg" viewBox="0 0 760 420" fill="none" preserveAspectRatio="xMidYMid meet">
-              <defs>
-                <linearGradient id="arcTrackGrad" x1="0%" y1="100%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#0062ff" stopOpacity="0.25" />
-                  <stop offset="50%" stopColor="#0062ff" stopOpacity="0.65" />
-                  <stop offset="100%" stopColor="#0062ff" stopOpacity="0.25" />
-                </linearGradient>
-              </defs>
-              {/* Semi-circular Arc Line */}
-              <path
-                d="M 60,370 A 320,320 0 0,1 700,370"
-                stroke="url(#arcTrackGrad)"
-                strokeWidth="4"
-                strokeLinecap="round"
-                fill="none"
-              />
-            </svg>
-
-            {/* Floating 'More Services' Badge with cute pointer arrow */}
-            <div className="arc-more-services-badge">
-              <div className="more-services-btn-wrapper">
-                <button className="more-services-circle-btn" type="button" aria-label="More Services">
-                  <Plus size={18} strokeWidth={2.5} />
-                </button>
-                <span className="more-services-text">More Services &rarr;</span>
-              </div>
-              {/* Cute Curved Doodle Arrow pointing to button */}
-              <svg className="more-services-doodle-arrow" viewBox="0 0 50 50" fill="none">
-                <path
-                  d="M10,40 C12,25 24,18 36,24"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                />
-                <path
-                  d="M32,18 L38,24 L30,27"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </div>
-
-            {/* Circular Interactive Nodes positioned along the Arc */}
-            <div className="arc-nodes-container">
-              {arcServicesList.map((service, index) => {
-                const isActive = activeServiceIndex === index;
-                return (
-                  <button
-                    key={service.id}
-                    type="button"
-                    className={`arc-node-btn node-pos-${index} ${isActive ? 'active' : ''}`}
-                    onClick={() => setActiveServiceIndex(index)}
-                    aria-label={`Select ${service.title}`}
-                    title={service.title}
-                  >
-                    <span className="arc-node-icon">
-                      {renderArcNodeIcon(service.iconType)}
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-
-            {/* Central Active Service Card Display */}
-            <div className="arc-center-card">
-              <div className="center-card-icon-display">
-                <div className="center-icon-screen">
-                  <svg viewBox="0 0 64 64" fill="none" className="center-screen-svg">
-                    <rect x="6" y="10" width="52" height="36" rx="6" fill="#e0f2fe" stroke="#0062ff" strokeWidth="2.5" />
-                    <line x1="24" y1="52" x2="40" y2="52" stroke="#0062ff" strokeWidth="3" strokeLinecap="round" />
-                    <line x1="32" y1="46" x2="32" y2="52" stroke="#0062ff" strokeWidth="3" />
-                    {/* Rising Analytics Bars */}
-                    <rect x="14" y="28" width="6" height="12" rx="1.5" fill="#0062ff" />
-                    <rect x="24" y="22" width="6" height="18" rx="1.5" fill="#0284c7" />
-                    <rect x="34" y="18" width="6" height="22" rx="1.5" fill="#38bdf8" />
-                    <rect x="44" y="25" width="6" height="15" rx="1.5" fill="#0062ff" />
-                    <path d="M14,24 L24,18 L34,14 L44,20" stroke="#0062ff" strokeWidth="2" strokeLinecap="round" />
-                  </svg>
-                </div>
-              </div>
-
-              <h3 className="center-card-title">{arcServicesList[activeServiceIndex].title}</h3>
-
-              {/* Blue accent underline bar */}
-              <div className="center-card-divider"></div>
-
-              <p className="center-card-desc">
-                Our flagship business publication,{' '}
-                <a href="#publications" className="center-card-highlight-link">
-                  {arcServicesList[activeServiceIndex].highlightText}
-                </a>
-                , has been defining and informing the senior management agenda since 1964.
-              </p>
-
-              <button className="btn-arc-read-more" type="button">
-                Read More
+            <div className="carousel-controls" data-reveal="left" style={{ '--d': '300ms' }}>
+              <button
+                type="button"
+                className="carousel-btn"
+                aria-label="Previous testimonial"
+                disabled={testimonialStart === 0}
+                onClick={() => setTestimonialStart((n) => Math.max(0, n - 1))}
+              >
+                <ChevronLeft size={16} />
+              </button>
+              <button
+                type="button"
+                className="carousel-btn carousel-btn-active"
+                aria-label="Next testimonial"
+                onClick={() => setTestimonialStart((n) => (n + 1) % testimonials.length)}
+              >
+                <ChevronRight size={16} />
               </button>
             </div>
           </div>
+
+          <div className="testimonials-grid">
+            {testimonials.map((_, i) => {
+              const t = testimonials[(testimonialStart + i) % testimonials.length];
+              return (
+                <figure key={t.name} className="testimonial-card" data-reveal="up" style={{ '--d': `${i * 130}ms` }}>
+                  <Quote size={26} className="testimonial-quote" aria-hidden="true" />
+                  <blockquote>{t.text}</blockquote>
+                  <figcaption>
+                    <span className="testimonial-avatar" aria-hidden="true">{t.initials}</span>
+                    <span className="testimonial-person">
+                      <strong>{t.name}</strong>
+                      <span>{t.role}</span>
+                    </span>
+                    <span className="testimonial-stars" aria-label="5 out of 5 stars">
+                      {[0, 1, 2, 3, 4].map((s) => (
+                        <Star key={s} size={13} fill="currentColor" strokeWidth={0} />
+                      ))}
+                    </span>
+                  </figcaption>
+                </figure>
+              );
+            })}
+          </div>
         </div>
       </section>
+
+      {/* ── CTA Banner ── */}
+      <section className="cta-section" aria-labelledby="cta-heading">
+        <div className="cta-bg" aria-hidden="true">
+          <img src="/images/cta-bg.jpg" alt="" loading="lazy" data-parallax />
+        </div>
+        <div className="section-container cta-inner">
+          <span className="section-eyebrow" data-reveal="up">LET&apos;S BUILD TOGETHER</span>
+          <h2 id="cta-heading" className="section-title section-title-md" data-reveal="words">
+            <Words text="Ready to transform your business?" />
+          </h2>
+          <p className="section-lead" data-reveal="up" style={{ '--d': '300ms' }}>
+            Partner with us to build innovative, scalable, and future-ready solutions
+            that create real impact.
+          </p>
+          <div className="cta-actions" data-reveal="up" style={{ '--d': '450ms' }}>
+            <a href="#contact" className="btn-primary">
+              <span>Get Started</span>
+              <ArrowRight size={14} />
+            </a>
+            <a href="#contact" className="btn-outline-pill btn-outline-lg">
+              <span>Talk to Sales</span>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Footer ── */}
+      <footer className="site-footer" id="contact">
+        <div className="section-container footer-grid">
+          <div className="footer-brand" data-reveal="up">
+            <a href="#home" aria-label="Aurevia">
+              <img src="/images/aurevia-logo.png" alt="Aurevia" className="footer-logo" />
+            </a>
+            <p>
+              Building innovative technology solutions that help businesses grow,
+              adapt, and succeed in a digital world.
+            </p>
+            <div className="footer-socials">
+              {socialLinks.map(({ label, path }) => (
+                <a key={label} href="#contact" aria-label={label} className="social-link">
+                  <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor" aria-hidden="true">
+                    <path d={path} />
+                  </svg>
+                </a>
+              ))}
+            </div>
+          </div>
+
+          {footerColumns.map(({ title, links }, i) => (
+            <nav key={title} className="footer-col" aria-label={title} data-reveal="up" style={{ '--d': `${(i + 1) * 110}ms` }}>
+              <h4>{title}</h4>
+              <ul>
+                {links.map((label) => (
+                  <li key={label}><a href="#home">{label}</a></li>
+                ))}
+              </ul>
+            </nav>
+          ))}
+
+          <div className="footer-col footer-newsletter" data-reveal="up" style={{ '--d': '440ms' }}>
+            <h4>Newsletter</h4>
+            <p>Stay updated with our latest insights and news.</p>
+            <form
+              className="newsletter-form"
+              onSubmit={(ev) => {
+                ev.preventDefault();
+                setEmail('');
+              }}
+            >
+              <input
+                type="email"
+                required
+                placeholder="Enter your email"
+                aria-label="Email address"
+                value={email}
+                onChange={(ev) => setEmail(ev.target.value)}
+              />
+              <button type="submit" aria-label="Subscribe">
+                <Send size={15} />
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <div className="section-container footer-bottom" data-reveal="fade">
+          <span>&copy; {new Date().getFullYear()} Aurevia. All rights reserved.</span>
+          <div className="footer-legal">
+            <a href="#home">Privacy Policy</a>
+            <a href="#home">Terms of Service</a>
+            <a href="#home">Sitemap</a>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 };
