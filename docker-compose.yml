@@ -1,0 +1,18 @@
+services:
+  frontend:
+    build: ./frontend
+    image: aurevia_fimg
+    container_name: aurevia_fcontainer
+    restart: unless-stopped
+    ports:
+      - "8042:80"
+
+  # Enable once backend code and a backend/Dockerfile exist:
+  # backend:
+  #   build: ./backend
+  #   image: aurevia_bimg
+  #   container_name: aurevia_bcontainer
+  #   restart: unless-stopped
+  #   env_file: ./backend/.env
+  #   ports:
+  #     - "8041:8041"
