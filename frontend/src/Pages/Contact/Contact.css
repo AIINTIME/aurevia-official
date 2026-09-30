@@ -1,0 +1,120 @@
+/* ==========================================================================
+   Contact.css — builds on About.css (same tokens, eyebrow, titles, cards, buttons)
+   ========================================================================== */
+.contact-page .ct-tint { background: var(--tint); }
+.contact-page .ct-plain { background: var(--bg); }
+
+/* ---------- Hero ---------- */
+.ct-hero { padding-bottom: 60px; }
+.ct-hero .ab-hero-inner { min-height: 380px; }
+.ct-hero-points { display: flex; gap: 16px; margin-top: 40px; flex-wrap: wrap; }
+.ct-hero-point {
+  display: flex; align-items: center; gap: 12px; padding: 12px 18px 12px 12px;
+  font-size: 12.5px; line-height: 1.35; font-weight: 600;
+  background: color-mix(in srgb, var(--card) 80%, transparent);
+  border: 1px solid var(--border); border-radius: 14px;
+  backdrop-filter: blur(10px); box-shadow: var(--shadow);
+}
+
+/* ---------- Form ---------- */
+.ct-form-section { padding-top: 20px; }
+.ct-form-grid { display: grid; grid-template-columns: 1fr 0.5fr; gap: 22px; align-items: stretch; }
+.ct-form-card { padding: 34px 36px 38px; }
+.ct-form-card .ab-pill { margin-bottom: 12px; }
+.ct-lead { margin-top: 12px; font-size: 14px; line-height: 1.65; color: var(--soft); }
+.ct-lead strong { color: var(--ink); }
+.ct-note { display: inline-flex; align-items: center; gap: 6px; margin: 10px 0 26px; font-size: 12px; font-weight: 600; color: #10b981; }
+
+.ct-form { display: grid; grid-template-columns: 1fr 1fr; gap: 18px 22px; }
+.ct-full { grid-column: 1 / -1; }
+.ct-field { display: flex; flex-direction: column; gap: 8px; }
+.ct-field > span { font-size: 12px; font-weight: 600; color: var(--ink); }
+.ct-field b { color: #ef4444; font-weight: 600; }
+.ct-form input[type='text'], .ct-form input[type='email'], .ct-form input[type='tel'], .ct-form select, .ct-form textarea {
+  width: 100%; height: 46px; padding: 0 16px; font: inherit; font-size: 13px; color: var(--ink);
+  background: var(--tint); border: 1px solid var(--border); border-radius: 12px; outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+}
+.ct-form ::placeholder { color: var(--faint); }
+.ct-form textarea { height: auto; min-height: 120px; padding: 14px 16px; resize: vertical; }
+.ct-form input:focus, .ct-form select:focus, .ct-form textarea:focus {
+  background: var(--card); border-color: var(--blue); box-shadow: 0 0 0 3px color-mix(in srgb, var(--blue) 15%, transparent);
+}
+.ct-phone { display: flex; gap: 8px; }
+.ct-code { display: inline-flex; align-items: center; gap: 6px; flex-shrink: 0; height: 46px; padding: 0 14px; font-size: 13px; background: var(--tint); border: 1px solid var(--border); border-radius: 12px; }
+.ct-code b { font-weight: 600; }
+.ct-consent { display: flex; align-items: flex-start; gap: 10px; font-size: 12px; line-height: 1.6; color: var(--soft); }
+.ct-consent input { margin-top: 3px; accent-color: var(--blue); }
+.ct-consent a { color: var(--blue); text-decoration: underline; }
+.ct-consent b { color: #ef4444; }
+.ct-submit { width: 100%; height: 48px; font-size: 14px; }
+
+.ct-aside { position: relative; min-height: 480px; border-radius: 16px; overflow: hidden; box-shadow: var(--shadow); }
+.ct-aside img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.ct-aside::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 35%, rgba(10, 60, 200, 0.82) 100%); }
+.ct-aside-copy { position: absolute; z-index: 1; left: 28px; right: 28px; bottom: 30px; color: #fff; }
+.ct-aside-copy::before { content: ''; display: block; width: 28px; height: 2px; background: #fff; margin-bottom: 16px; }
+.ct-aside-copy h3 { font-size: 24px; font-weight: 800; line-height: 1.15; letter-spacing: -0.01em; }
+.ct-aside-copy p { margin-top: 12px; font-size: 13.5px; line-height: 1.6; opacity: 0.94; }
+
+/* ---------- Direct channels ---------- */
+.ct-channels { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.ct-channel { padding: 28px 26px 30px; display: flex; flex-direction: column; align-items: flex-start; transition: transform 0.3s ease, box-shadow 0.3s ease; }
+.ct-channel:hover, .ct-office:hover, .ct-social:hover { transform: translateY(-5px); box-shadow: 0 18px 36px -14px rgba(0, 70, 200, 0.25); }
+.ct-ch-icon { display: inline-flex; align-items: center; justify-content: center; width: 46px; height: 46px; border-radius: 12px; margin-bottom: 36px; }
+.ct-blue { color: #0062ff; background: rgba(0, 98, 255, 0.1); }
+.ct-green { color: #10b981; background: rgba(16, 185, 129, 0.12); }
+.ct-purple { color: #a855f7; background: rgba(168, 85, 247, 0.12); }
+.ct-channel h3 { font-size: 15px; font-weight: 700; margin-bottom: 8px; }
+.ct-channel p { font-size: 12.5px; line-height: 1.6; color: var(--soft); margin-bottom: 20px; }
+.ct-phone-line { display: inline-flex; align-items: center; gap: 10px; margin-top: 8px; font-size: 13px; font-weight: 600; color: var(--ink); transition: color 0.2s; }
+.ct-phone-line:hover { color: var(--blue); }
+.ct-phone-line svg { color: var(--blue); }
+.ct-pill { display: flex; align-self: stretch; justify-content: center; align-items: center; height: 42px; margin-top: auto; border-radius: 999px; font-size: 13px; font-weight: 600; color: var(--ink); border: 1.5px solid; transition: transform 0.2s, background 0.2s; }
+.ct-pill:hover { transform: translateY(-2px); }
+.ct-pill-green { border-color: #34d399; }
+.ct-pill-green:hover { background: rgba(16, 185, 129, 0.08); }
+.ct-pill-purple { border-color: #c084fc; }
+.ct-pill-purple:hover { background: rgba(168, 85, 247, 0.08); }
+
+/* ---------- Map ---------- */
+.ct-map { position: relative; max-width: 1100px; margin: 0 auto 44px; color: color-mix(in srgb, var(--blue) 24%, var(--border)); }
+.ct-map svg { width: 100%; display: block; }
+.ct-pin { position: absolute; display: block; width: 20px; height: 20px; transform: translate(-10px, -20px); }
+.ct-pin-label { position: absolute; white-space: nowrap; display: flex; flex-direction: column; padding: 7px 14px 7px 12px; background: var(--card); border: 1px solid var(--border); border-radius: 10px; box-shadow: var(--shadow); font-size: 12px; line-height: 1.25; margin-top: 8px; }
+.ct-pin-label small { font-size: 10px; color: var(--faint); }
+.ct-pin-right .ct-pin-label { left: 26px; top: 0; }
+.ct-pin-left .ct-pin-label { right: 26px; top: 0; }
+.ct-pin-below .ct-pin-label { left: 50%; top: 24px; transform: translateX(-50%); }
+
+/* ---------- Offices ---------- */
+.ct-offices { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.ct-office { display: flex; flex-direction: column; align-items: center; text-align: center; padding: 34px 24px 32px; transition: transform 0.3s ease, box-shadow 0.3s ease; }
+.ct-flag { font-size: 34px; line-height: 1; margin-bottom: 16px; font-family: 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', sans-serif; }
+.ct-office h3 { font-size: 15px; font-weight: 700; margin-bottom: 10px; }
+.ct-office em { font-style: normal; font-size: 11.5px; font-weight: 600; color: var(--blue); background: var(--chip); padding: 4px 12px; border-radius: 999px; margin-bottom: 18px; }
+.ct-office strong { font-size: 12px; font-weight: 700; margin-bottom: 10px; }
+.ct-office p { font-size: 12.5px; line-height: 1.65; color: var(--soft); }
+
+/* ---------- Social ---------- */
+.ct-socials { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+.ct-social { display: flex; flex-direction: column; align-items: center; text-align: center; padding: 28px 22px 30px; transition: transform 0.3s ease, box-shadow 0.3s ease; }
+.ct-social-icon { margin-bottom: 16px; }
+.ct-social h3 { font-size: 15px; font-weight: 700; margin-bottom: 8px; }
+.ct-social p { font-size: 12.5px; line-height: 1.6; color: var(--soft); }
+.ct-foot-loc { margin-top: 6px; }
+
+@media (max-width: 1024px) {
+  .ct-form-grid { grid-template-columns: 1fr; }
+  .ct-aside { min-height: 340px; }
+  .ct-offices { grid-template-columns: repeat(2, 1fr); }
+  .ct-socials { grid-template-columns: repeat(2, 1fr); }
+  .ct-channels { grid-template-columns: 1fr; }
+}
+@media (max-width: 640px) {
+  .ct-form { grid-template-columns: 1fr; }
+  .ct-form-card { padding: 26px 20px; }
+  .ct-offices, .ct-socials { grid-template-columns: 1fr; }
+  .ct-pin-label { display: none; }
+  .ct-hero-points { gap: 10px; }
+}
