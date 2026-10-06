@@ -5,6 +5,7 @@ import {
   Globe,
   Mail,
   MapPin,
+  ArrowRight,
   MessageSquare,
   Phone,
   Briefcase,
@@ -19,6 +20,8 @@ import { Words } from '../../components/Reveal';
 import { useScrollReveal } from '../../components/useReveal';
 import { socialLinks } from '../../data/socialLinks';
 import { worldMapPath, worldMapViewBox } from '../../data/worldMapDots';
+import RotatingGlobe from '../../components/RotatingGlobe';
+import { Flag, CountryArt } from './OfficeArt';
 
 const heroPoints = [
   { Icon: MessageSquare, text: ['Expert', 'Consultation'] },
@@ -29,18 +32,52 @@ const heroPoints = [
 const inquiryAreas = ['AI & Intelligent Automation', 'SAP Consulting & Support', 'Business Intelligence & Analytics', 'Cloud Transformation', 'Careers', 'Other'];
 const priorities = ['Low', 'Medium', 'High', 'Urgent'];
 
-// Pin positions are lon/lat projected onto the same box as the dotted map
-const pins = [
-  { name: 'USA', side: 'left', region: 'North America', color: '#22c55e', style: { left: '20.6%', top: '29.7%' } },
-  { name: 'UAE', side: 'left', region: 'Middle East', color: '#f59e0b', style: { left: '64.0%', top: '40.6%' } },
-  { name: 'India', side: 'below', region: 'Asia', color: '#a855f7', style: { left: '70.9%', top: '42.0%' } },
-  { name: 'Bangladesh', side: 'right', region: 'Asia', color: '#ef4444', style: { left: '74.3%', top: '40.6%' } },
+// The dotted map is equirectangular (lon -170..180, lat 80..-58) in a 1000x394 box
+const project = (lon, lat) => [((lon + 170) / 350) * 1000, ((80 - lat) / 138) * 394];
+const place = (lon, lat) => {
+  const [x, y] = project(lon, lat);
+  return { left: `${x / 10}%`, top: `${y / 3.94}%` };
+};
+const arc = (from, to, lift) => {
+  const [x1, y1] = Array.isArray(from) && from.raw ? from : project(...from);
+  const [x2, y2] = Array.isArray(to) && to.raw ? to : project(...to);
+  return `M${x1.toFixed(1)} ${y1.toFixed(1)}Q${((x1 + x2) / 2).toFixed(1)} ${(Math.min(y1, y2) - lift).toFixed(1)} ${x2.toFixed(1)} ${y2.toFixed(1)}`;
+};
+const raw = (x, y) => Object.assign([x, y], { raw: true });
+
+const LA = [-118, 34];
+const NYC = [-74, 41];
+const LONDON = [0, 51.5];
+const UAE = [55.3, 25.2];
+const INDIA = [80, 18];
+const BANGLADESH = [90.4, 23.8];
+
+const arcs = [
+  { d: arc(raw(-175, 168), LA, 70), color: '#3b8bff', faint: true },
+  { d: arc(raw(-100, 396), raw(18, 150), 150), color: '#3b8bff', faint: true },
+  { d: arc(LA, NYC, 28), color: '#3b8bff' },
+  { d: arc(NYC, LONDON, 62), color: '#3b8bff' },
+  { d: arc(LONDON, UAE, 44), color: '#f59e0b' },
+  { d: arc(UAE, INDIA, 26), color: '#a855f7' },
+  { d: arc(INDIA, BANGLADESH, 16), color: '#ef4444' },
+  { d: arc(BANGLADESH, raw(1075, 232), 70), color: '#ef4444', faint: true },
+];
+
+const nodes = [
+  { at: LA }, { at: NYC }, { at: LONDON }, { at: [-157, 21] },
+  { at: [-47, -23] }, { at: [83, 55] }, { at: [151, -34] },
+];
+
+const hubs = [
+  { name: 'UAE', region: 'Middle East', code: 'AE', color: '#f59e0b', side: 'left', at: UAE },
+  { name: 'India', region: 'Asia', code: 'IN', color: '#a855f7', side: 'below', at: INDIA },
+  { name: 'Bangladesh', region: 'Asia', code: 'BD', color: '#ef4444', side: 'right', at: BANGLADESH },
 ];
 
 const offices = [
-  { flag: '🇮🇳', country: 'India', role: 'Global HQ', company: 'INTIME IT SERVICES PVT LTD', address: [<>3016-MIRAKUNJ, 3<sup>RD</sup> FLOOR,</>, 'RAJDANGA MAIN ROAD, KASBA,', 'KOLKATA-700107, WEST BENGAL'] },
-  { flag: '🇦🇪', country: 'UAE (Dubai)', role: 'Middle East Hub', company: 'AUREVIATECH SOLUTIONS - FZCO', address: ['Premises No: DSO-DDP-A5-D-FLEX-G114,', 'Building Name: A5,', 'Area Name: Dubai Silicon Oasis'] },
-  { flag: '🇧🇩', country: 'Bangladesh', role: 'Regional Office', company: 'INTIME IT SERVICES PVT LTD', address: ['57/16, East Rajabazar, West Panthapath,', 'Sher-E-Bangla Nagar,', 'Dhaka-1215, Bangladesh'] },
+  { code: 'IN', country: 'India', role: 'Global HQ', company: 'INTIME IT SERVICES PVT LTD', query: '3016 Mirakunj, Rajdanga Main Road, Kasba, Kolkata 700107', address: [<>3016-MIRAKUNJ, 3<sup>RD</sup> FLOOR,</>, 'RAJDANGA MAIN ROAD, KASBA,', 'KOLKATA-700107, WEST BENGAL'] },
+  { code: 'AE', country: 'UAE (Dubai)', role: 'Middle East Hub', company: 'AUREVIATECH SOLUTIONS - FZCO', query: 'Building A5, Dubai Silicon Oasis, Dubai', address: ['Premises No: DSO-DDP-A5-D-FLEX-G114,', 'Building Name: A5,', 'Area Name: Dubai Silicon Oasis'] },
+  { code: 'BD', country: 'Bangladesh', role: 'Regional Office', company: 'INTIME IT SERVICES PVT LTD', query: '57/16 East Rajabazar, West Panthapath, Dhaka 1215, Bangladesh', address: ['57/16, East Rajabazar, West Panthapath,', 'Sher-E-Bangla Nagar,', 'Dhaka-1215, Bangladesh'] },
 ];
 
 const socials = [
@@ -84,7 +121,7 @@ const Contact = () => {
       <section className="ab-hero ct-hero">
         <Navbar page="contact" isDarkMode={isDark} onToggleTheme={toggleTheme} />
         <div className="ab-hero-media" aria-hidden="true">
-          <img src="/images/contact-hero.png" alt="" />
+          <img src="/images/contact-hero-global.png" alt="" />
         </div>
         <div className="ab-container ab-hero-inner">
           <div className="ab-hero-copy">
@@ -196,34 +233,54 @@ const Contact = () => {
       </section>
 
       {/* ── Global offices ── */}
-      <section className="ab-section ct-tint">
-        <div className="ab-container">
+      <section className="ab-section ct-loc">
+        <RotatingGlobe className="ct-globe" isDark={isDark} />
+
+        <div className="ab-container ct-loc-inner">
           <header className="ab-section-head">
             <span className="ab-pill" data-reveal="up">LOCATIONS</span>
             <h2 className="ab-title" data-reveal="up">Global <span className="ab-accent">Offices</span></h2>
-            <p className="ab-sub" data-reveal="up">We&apos;re here to serve you across multiple continents.</p>
+            <p className="ab-sub" data-reveal="up">We&apos;re here to serve you across multiple continents with local teams and global expertise.</p>
           </header>
 
-          <div className="ct-map" data-reveal="up" role="img" aria-label="Global map of our offices">
-            <svg viewBox={worldMapViewBox} preserveAspectRatio="xMidYMid meet" aria-hidden="true">
-              <path d={worldMapPath} fill="none" stroke="currentColor" strokeWidth="3.6" strokeLinecap="round" />
+          <div className="ct-map" data-reveal="up" role="img" aria-label="Global map of our offices in India, UAE and Bangladesh">
+            <svg className="ct-map-svg" viewBox={worldMapViewBox} preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+              <path d={worldMapPath} fill="none" stroke="currentColor" strokeWidth="3.4" strokeLinecap="round" />
+              {arcs.map(({ d, color, faint }, i) => (
+                <g key={i} style={{ color }} className={faint ? 'ct-arc ct-arc-faint' : 'ct-arc'}>
+                  <path d={d} className="ct-arc-line" />
+                  {!faint && <path d={d} className="ct-arc-flow" style={{ animationDelay: `${i * 0.6}s` }} />}
+                </g>
+              ))}
             </svg>
-            {pins.map(({ name, region, color, side, style }) => (
-              <div key={name} className={`ct-pin ct-pin-${side}`} style={style}>
-                <MapPin size={20} fill={color} color={color} strokeWidth={1.5} />
-                <span className="ct-pin-label"><b>{name}</b><small>{region}</small></span>
+            {nodes.map(({ at }, i) => <span key={i} className="ct-node" style={place(...at)} />)}
+            {hubs.map(({ name, region, code, color, side, at }) => (
+              <div key={name} className={`ct-hub ct-hub-${side}`} style={{ ...place(...at), '--c': color }}>
+                <span className="ct-hub-dot" />
+                <span className="ct-hub-card">
+                  <Flag code={code} width={30} />
+                  <span><b>{name}</b><small>{region}</small></span>
+                </span>
               </div>
             ))}
           </div>
 
           <div className="ct-offices">
-            {offices.map(({ flag, country, role, company, address }, i) => (
-              <article key={country} className="ab-card ct-office" data-reveal="up" style={{ '--d': `${i * 100}ms` }}>
-                <span className="ct-flag" aria-hidden="true">{flag}</span>
-                <h3>{country}</h3>
-                <em>{role}</em>
-                <strong>{company}</strong>
-                {address.map((l, k) => <p key={k}>{l}</p>)}
+            {offices.map(({ code, country, role, company, address, query }, i) => (
+              <article key={country} className={`ct-office ct-office-${code.toLowerCase()}`} data-reveal="up" style={{ '--d': `${i * 100}ms` }}>
+                <CountryArt code={code} />
+                <div className="ct-office-body">
+                  <header className="ct-office-head">
+                    <Flag code={code} width={48} />
+                    <h3>{country}</h3>
+                    <em>{role}</em>
+                  </header>
+                  <strong>{company}</strong>
+                  <div className="ct-office-addr">{address.map((l, k) => <p key={k}>{l}</p>)}</div>
+                  <a className="ct-office-link" href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`} target="_blank" rel="noopener noreferrer">
+                    View Location <ArrowRight size={18} />
+                  </a>
+                </div>
               </article>
             ))}
           </div>
