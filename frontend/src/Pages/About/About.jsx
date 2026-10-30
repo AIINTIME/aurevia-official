@@ -140,8 +140,8 @@ const About = () => {
           <div className="ab-hero-copy">
             <span className="ab-pill" data-reveal="up">ABOUT AUREVIA</span>
             <h1 className="ab-hero-title" data-reveal="words">
-              <Words text="We Are" /><br />
-              <span className="ab-accent"><Words text="InTime Global" start={2} /></span>
+              <Words text="We are" /><br />
+              <span className="ab-accent"><Words text="Forward Deployment Architect" start={2} /></span>
             </h1>
             <p className="ab-hero-desc" data-reveal="up" style={{ '--d': '250ms' }}>
               Architects of our autonomous future. We empower enterprises with AI,
